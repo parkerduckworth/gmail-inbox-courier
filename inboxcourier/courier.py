@@ -1,11 +1,12 @@
+import auth
+import dispatch
 import threading
-
-from service import Service
 
 
 class Courier:
     def __init__(self, creds_file, creds_dir='.'):
-        self.service = Service(creds_file, creds_dir)
+        authorized_service = auth.Service(creds_file, creds_dir)
+        self.dispatcher = dispatch.Dispatcher(authorized_service.use())
 
     def run(self, label_ids, filter_action, topic_name):
         # TODO: validate input
@@ -16,11 +17,11 @@ class Courier:
         }
 
         watcher_thread = threading.Thread(
-            target=self.service.watch_inbox,
+            target=self.dispatcher.watch_inbox,
             args=(pubsub_request,),
             daemon=True)
 
         watcher_thread.start()
 
-    def deliver_mail(self, query_string, has_attachments, max_messages=None):
-        return self.service.check_inbox(query_string, has_attachments, max_messages)
+    def deliver_mail(self, query, has_attachments):
+        return self.dispatcher.check_inbox(query, has_attachments)
