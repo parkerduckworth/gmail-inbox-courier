@@ -1,0 +1,11 @@
+# Python build files
+**/__pycache__/
+
+# Virtual env
+venv/
+
+# IDE
+.vscode/
+
+# macOS
+.DS_Store
