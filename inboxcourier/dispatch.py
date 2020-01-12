@@ -8,7 +8,7 @@ from googleapiclient.errors import HttpError
 class Dispatcher:
     def __init__(self, service):
         self.service = service
-        self.message_handler = message.MessageHandler()
+        self.message_handler = message.MessageHandler(self.service)
 
     def watch_inbox(self, pubsub_request):
         schedule.every().day.do(
@@ -27,11 +27,10 @@ class Dispatcher:
 
         print('[debug] Inbox watch initiated. request: {}'.format(request))
 
-    def check_inbox(self, query, has_attachments):
+    def check_inbox(self, query):
         try:
             received_messages = self._list_messages(query)
-            processed_payload = self.message_handler.process_messages(
-                received_messages, has_attachments)
+            processed_payload = self.message_handler.process_messages(received_messages)
 
             return processed_payload
         except Exception as error:
@@ -58,4 +57,4 @@ class Dispatcher:
 
             return messages
         except HttpError as error:
-            print('An error occurred: {}'.format(error))
+            print('list_messages error: {}'.format(error))

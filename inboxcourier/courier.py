@@ -23,5 +23,5 @@ class Courier:
 
         watcher_thread.start()
 
-    def deliver_mail(self, query, has_attachments):
-        return self.dispatcher.check_inbox(query, has_attachments)
+    def deliver_mail(self, query):
+        return self.dispatcher.check_inbox(query)
